@@ -5,15 +5,6 @@ import (
 	"strconv"
 )
 
-type randomGenerator struct {
-	seed int64
-}
-
-func NewRNG(seed int64) (r randomGenerator) {
-	r.seed = seed
-	return
-}
-
 // Default math/rand in Go-language
 // return [min, max)
 func (r *goMathRand) Int64(min, max int64) int64 {
@@ -27,7 +18,11 @@ func (r *goMathRand) Int64(min, max int64) int64 {
 // Default CSPRNG in Go-language
 // return [min, max)
 func (r *goCryptoRand) Int64(min, max int64) int64 {
-	return GetCryptoRandInt(min, max)
+	return getCryptoRandInt(min, max)
+}
+
+func (r *goCryptoRand) Float64(min, max float64) float64 {
+	return getCryptoRandFloat(min, max)
 }
 
 // Middle-square method, John von Neumann (1949)

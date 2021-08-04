@@ -107,3 +107,32 @@ type icg struct {
 func NewInversiveCongruentialGenerator(q, a, c, seed int64) icg {
 	return icg{q: q, a: a, c: c, seed: seed}
 }
+
+// Additive COngruential Random Number
+// Couldn't understand ACORN FORTRAN 77, http://acorn.wikramaratna.org/download.html
+// So, I built on my own by reading paper
+// The additive congruential random number generator A special case of a multiple recursive generator
+// Roy S. Wikramaratna, Volume 216, Issue 2, 1 July 2008, Pages 371-387
+type acorn struct {
+	modulus int64
+	order   int64 // k
+	seed    []int64
+}
+
+func NewACORN(k int64) acorn {
+	seeds := make([]int64, k+1)
+	var mod int64 = 1 << 61
+	r := NewGoCryptoRand()
+	for i := range seeds {
+		s := int64(float64(mod) * r.Float64(0.0, 1.0))
+		if s%2 == 0 {
+			s = s + 1
+		}
+		seeds[i] = s
+	}
+	return acorn{
+		modulus: mod,
+		order:   k,
+		seed:    seeds,
+	}
+}

@@ -47,3 +47,13 @@ func TestICG(t *testing.T) {
 	fmt.Println(r.Generate())
 	fmt.Println(r.Generate())
 }
+
+func TestACORN(t *testing.T) {
+	r := NewACORN(10)
+	fmt.Println(r.NextFloat64())
+	fmt.Println(r.NextFloat64())
+	fmt.Println(r.NextFloat64())
+	fmt.Println(r.NextFloat64())
+	fmt.Println(r.NextFloat64())
+	fmt.Println(r.NextFloat64())
+}
