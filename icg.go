@@ -4,12 +4,6 @@ package rngset
 // Jiirgen Eichenauer-Herrman
 // International Statistical Review (1992), 60, 2, pp. 167-176. Printed in Great Britain
 
-// Inversive Congruential Generator
-// https://en.wikipedia.org/wiki/Inversive_congruential_generator
-func NewInversiveCongruentialGenerator(q, a, c, seed int64) icg {
-	return icg{q: q, a: a, c: c, seed: seed}
-}
-
 func (r *icg) Generate() int64 {
 	if r.seed == 0 {
 		r.seed = r.c

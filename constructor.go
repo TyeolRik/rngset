@@ -101,3 +101,9 @@ type icg struct {
 	c    int64
 	seed int64
 }
+
+// Inversive Congruential Generator
+// https://en.wikipedia.org/wiki/Inversive_congruential_generator
+func NewInversiveCongruentialGenerator(q, a, c, seed int64) icg {
+	return icg{q: q, a: a, c: c, seed: seed}
+}
