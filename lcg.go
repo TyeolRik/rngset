@@ -1,5 +1,6 @@
 package rngset
 
+// Linear congruential generator
 func LCG(a, xn, c, m int64) (x_next int64) {
 	x_next = (a*xn + c) % m
 	return

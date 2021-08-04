@@ -94,15 +94,10 @@ func NewRule30(seed int64, height int64) rule30 {
 	return *newRule
 }
 
+// nextSeed = (a * seed^(-1) + c) mod q
 type icg struct {
 	q    int64
 	a    int64
 	c    int64
 	seed int64
-}
-
-// Inversive Congruential Generator
-// https://en.wikipedia.org/wiki/Inversive_congruential_generator
-func NewInversiveCongruentialGenerator(q, a, c, seed int64) icg {
-
 }

@@ -5,6 +5,7 @@ import "fmt"
 // I couldn't find exact document which is about initial seeds.
 // Some paper said, initial seed is "Skipping n-bits and pick batches of n" (https://dev.to/arpit_bhayani/pseudorandom-numbers-using-rule-30-4mif)
 // But, there are some uncertainties. (What is "Standard initial dummy bits", which means before skipping.)
+// There is R source code in github but, I couldn't understand how 4 elements generated (always 1st element is 10400 in Online R compiler)
 // So, I utilized a demonstrated website (Wolfram Cloud Demonstration Page)
 // https://demonstrations.wolfram.com/UsingRule30ToGeneratePseudorandomRealNumbers/
 

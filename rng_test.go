@@ -38,3 +38,12 @@ func TestRule30(t *testing.T) {
 	fmt.Println(r.Generate())
 	fmt.Println(r.Generate())
 }
+
+func TestICG(t *testing.T) {
+	r := NewInversiveCongruentialGenerator(5, 2, 3, 1)
+	fmt.Println(r.Generate())
+	fmt.Println(r.Generate())
+	fmt.Println(r.Generate())
+	fmt.Println(r.Generate())
+	fmt.Println(r.Generate())
+}
