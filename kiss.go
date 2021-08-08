@@ -33,10 +33,6 @@ func (r *kiss) xs() uint64 {
 	return r._xs
 }
 
-func (r *kiss) kiss() uint64 {
-	return r.b64mwc() + r.cng() + r.xs()
-}
-
 func (r *kiss) NextUInt64() uint64 {
 	return r.b64mwc() + r.cng() + r.xs()
 }
