@@ -1,9 +1,11 @@
 package rngset
 
 import (
+	"C"
 	"fmt"
 	"strconv"
 )
+import "log"
 
 type goMathRand struct {
 	seed              int64
@@ -135,4 +137,183 @@ func NewACORN(k int64) acorn {
 		order:   k,
 		seed:    seeds,
 	}
+}
+
+// Add With Carry
+type awc struct {
+	seed []int64
+	c    int64 // Carry
+
+	b int64 // base, better to pick Prime Number
+	r int64 // r > s
+	s int64 // r > s
+}
+
+// Recommended suitable parameters
+// According to Journal,
+// George Marsaglia, Arif Zaman, A New Class of Random Number Generators, Page 476
+// https://projecteuclid.org/journals/annals-of-applied-probability/volume-1/issue-3/A-New-Class-of-Random-Number-Generators/10.1214/aoap/1177005878.full
+func NewAWC_Recommend() awc {
+	// Couldn't understand Section 5.
+	// Which is about seed.
+	// So I used just random bits from Go default crypto/rand
+	init := make([]int64, 39)
+	r := NewGoCryptoRand()
+	for i := range init {
+		init[i] = r.Int64(0, 16777215) // On the p.473, each seed values in range 0 to (b - 1) (=2^24-1)
+	}
+	return awc{
+		seed: init,
+		c:    0,
+		r:    39,
+		s:    25,
+		b:    (1 << 25),
+	}
+}
+
+func NewAWC(seed []int64, r int64, s int64, b int64) awc {
+	if r <= s {
+		log.Fatalln("AWC :: ERROR : r should be greater than s!")
+	}
+	return awc{
+		seed: seed,
+		c:    0,
+		r:    r,
+		s:    s,
+		b:    b,
+	}
+}
+
+// The Complementary AWC generator
+type awc_c struct {
+	seed []int64
+	c    int64 // Carry
+
+	b int64 // base, better to pick Prime Number
+	r int64 // r > s
+	s int64 // r > s
+}
+
+func NewAWC_C_Recommend() awc_c {
+	init := make([]int64, 39)
+	r := NewGoCryptoRand()
+	for i := range init {
+		init[i] = r.Int64(0, 16777215) // On the p.473, each seed values in range 0 to (b - 1) (=2^24-1)
+	}
+	return awc_c{
+		seed: init,
+		c:    0,
+		r:    39,
+		s:    25,
+		b:    (1 << 25),
+	}
+}
+
+func NewAWC_C(seed []int64, r int64, s int64, b int64) awc_c {
+	if r <= s {
+		log.Fatalln("AWC_C :: ERROR : r should be greater than s!")
+	}
+	return awc_c{
+		seed: seed,
+		c:    0,
+		r:    r,
+		s:    s,
+		b:    b,
+	}
+}
+
+type swb1 struct {
+	seed []int64
+	c    int64 // Carry
+
+	b int64 // base, better to pick Prime Number
+	r int64 // r > s
+	s int64 // r > s
+}
+
+func NewSWB1_Recommend() swb1 {
+	init := make([]int64, 39)
+	r := NewGoCryptoRand()
+	for i := range init {
+		init[i] = r.Int64(0, 16777215) // On the p.473, each seed values in range 0 to (b - 1) (=2^24-1)
+	}
+	return swb1{
+		seed: init,
+		c:    0,
+		r:    39,
+		s:    25,
+		b:    (1 << 25),
+	}
+}
+
+func NewSWB1(seed []int64, r int64, s int64, b int64) swb1 {
+	if r <= s {
+		log.Fatalln("AWC_C :: ERROR : r should be greater than s!")
+	}
+	return swb1{
+		seed: seed,
+		c:    0,
+		r:    r,
+		s:    s,
+		b:    b,
+	}
+}
+
+type swb2 struct {
+	seed []int64
+	c    int64 // Carry
+
+	b int64 // base, better to pick Prime Number
+	r int64 // r > s
+	s int64 // r > s
+}
+
+func NewSWB2_Recommend() swb2 {
+	init := make([]int64, 39)
+	r := NewGoCryptoRand()
+	for i := range init {
+		init[i] = r.Int64(0, 16777215) // On the p.473, each seed values in range 0 to (b - 1) (=2^24-1)
+	}
+	return swb2{
+		seed: init,
+		c:    0,
+		r:    39,
+		s:    25,
+		b:    (1 << 25),
+	}
+}
+
+func NewSWB2(seed []int64, r int64, s int64, b int64) swb2 {
+	if r <= s {
+		log.Fatalln("AWC_C :: ERROR : r should be greater than s!")
+	}
+	return swb2{
+		seed: seed,
+		c:    0,
+		r:    r,
+		s:    s,
+		b:    b,
+	}
+}
+
+// Keep it Simple Stupid, 64-bit MWC version (2011 version)
+// https://www.thecodingforums.com/threads/rngs-with-periods-exceeding-10-40million.742134/
+type kiss struct {
+	Q     [2097152]uint64
+	carry uint64
+
+	_cng uint64
+	_xs  uint64
+}
+
+func NewKISS(cng, xs uint64) kiss {
+	// First seed Q[] with CNG+XS:
+	r := kiss{
+		_cng: cng,
+		_xs:  xs,
+	}
+	for i := range r.Q {
+		r.Q[i] = r.cng() + r.xs()
+	}
+
 }
