@@ -302,6 +302,7 @@ type kiss struct {
 	Q     [2097152]uint64
 	carry uint64
 
+	j    int32
 	_cng uint64
 	_xs  uint64
 }
@@ -309,11 +310,30 @@ type kiss struct {
 func NewKISS(cng, xs uint64) kiss {
 	// First seed Q[] with CNG+XS:
 	r := kiss{
-		_cng: cng,
-		_xs:  xs,
+		carry: 0,
+		j:     2097151,
+		_cng:  cng,
+		_xs:   xs,
 	}
 	for i := range r.Q {
-		r.Q[i] = r.cng() + r.xs()
+		// r.Q[i] = r.cng() + r.xs()  // For reducing function overhead
+		r._xs ^= (r._xs << 13)
+		r._xs ^= (r._xs >> 17)
+		r._xs ^= (r._xs << 43)
+		r._cng = uint64(6906969069)*r._cng + 13579
+		r.Q[i] = r._cng + r._xs
 	}
-
+	// generate B64MWC()
+	for i := 0; i < 1000000000; i++ {
+		r.j = (r.j + 1) & 2097151
+		x := r.Q[r.j]
+		t := (x << 28) + r.carry
+		if t < x {
+			r.carry = (x >> 36) - 1
+		} else {
+			r.carry = (x >> 36)
+		}
+		r.Q[r.j] = t - x
+	}
+	return r
 }

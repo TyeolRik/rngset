@@ -2,6 +2,7 @@
 // Postname : RNGs with periods exceeding 10^(40million).
 // https://www.thecodingforums.com/threads/rngs-with-periods-exceeding-10-40million.742134/
 
+// ---------------- 64-bit MWC version ---------------------
 #include <stdio.h>
 static unsigned long long Q[2097152], carry = 0;
 
@@ -25,8 +26,9 @@ int main(void)
     unsigned long long i, x, cng = 123456789987654321LL,
                              xs = 362436069362436069LL;
     /* First seed Q[] with CNG+XS: */
-    for (i = 0; i < 2097152; i++)
+    for (i = 0; i < 2097152; i++) {
         Q[i] = CNG + XS;
+    }
     /* Then generate 10^9 B64MWC()s */
     for (i = 0; i < 1000000000; i++)
         x = B64MWC();

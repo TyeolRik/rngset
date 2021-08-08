@@ -85,3 +85,23 @@ func TestAWCandSWB(t *testing.T) {
 		fmt.Println(SWB2.NextFloat64())
 	}
 }
+
+func TestKISS(t *testing.T) {
+	r := NewKISS(123456789987654321, 362436069362436069)
+	var index uint64 = 0
+	for {
+		temp := r.NewFloat64()
+		if temp > 0.9999999 {
+			fmt.Println(index, ":", temp)
+			break
+		}
+	}
+	/*
+		var temp uint64
+		for i := 0; i < 1000000000; i++ {
+			temp = r.NextUInt64()
+		}
+		fmt.Println("Result: ", temp)
+		fmt.Println("Answer: ", 5033346742750153761)
+	*/
+}
