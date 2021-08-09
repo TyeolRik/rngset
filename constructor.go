@@ -338,6 +338,23 @@ func NewKISS(cng, xs uint64) kiss {
 	return r
 }
 
+type mt19937 struct {
+	MT    [624]uint32
+	index uint32
+}
+
+func NewMT19937(seed uint32) mt19937 {
+	r := mt19937{}
+	r.index = 624
+	r.MT[0] = seed
+	var i uint32
+	for i = 1; i < 624; i++ {
+		// The value for f for MT19937 is 1812433253
+		r.MT[i] = 1812433253*(r.MT[i-1]^(r.MT[i-1]>>30)) + i // lowest 32 bits
+	}
+	return r
+}
+
 type mt19937_64 struct {
 	MT    [312]uint64
 	index uint64
@@ -348,12 +365,91 @@ func NewMT19937_64(seed uint64) mt19937_64 {
 	r := mt19937_64{}
 	r.index = 312
 	r.MT[0] = seed
-	var f uint64 = 6364136223846793005
 	var i uint64
 	for i = 1; i < 312; i++ {
 		// MT[i] := lowest w bits of (f * (MT[i-1] xor (MT[i-1] >> (w-2))) + i)
-		// The value for f for MT19937 is 1812433253 and for MT19937-64 is 6364136223846793005.
-		r.MT[i] = f*(r.MT[i-1]^(r.MT[i-1]>>62)) + i // lowest 64 bits
+		// The value for f for MT19937-64 is 6364136223846793005.
+		r.MT[i] = 6364136223846793005*(r.MT[i-1]^(r.MT[i-1]>>62)) + i // lowest 64 bits
 	}
 	return r
+}
+
+// Well equidistributed long-period linear
+type well512a struct {
+	state   [16]uint32
+	state_i uint32
+
+	w, r, p    uint32
+	m1, m2, m3 uint32
+	z0, z1, z2 uint32
+}
+
+// the length of Seeds should be 16
+func NewWELL512a(seeds [16]uint32) (r well512a) {
+	r = well512a{
+		state_i: 0,
+		w:       32,
+		r:       16,
+		p:       0,
+		m1:      13,
+		m2:      9,
+		m3:      5,
+	}
+	copy(r.state[:], seeds[:])
+	return
+}
+
+type well1024a struct {
+	state   [32]uint32
+	state_i uint32
+
+	w, r       uint32
+	m1, m2, m3 uint32
+	z0, z1, z2 uint32
+}
+
+func NewWELL1024a(seeds [32]uint32) (r well1024a) {
+	r = well1024a{
+		state_i: 0,
+		w:       32,
+		r:       32,
+		m1:      3,
+		m2:      24,
+		m3:      10,
+	}
+	copy(r.state[:], seeds[:])
+	return
+}
+
+type well19937a struct {
+	state   [624]uint32
+	state_i uint32
+
+	_case            uint32 // case 1, 2, 3, 4, 5, 6
+	tempering        bool   // If true, well19937c
+	temperB, temperC uint32
+	w, r, p          uint32
+	maskU, maskL     uint32
+	m1, m2, m3       uint32
+	z0, z1, z2       uint32
+}
+
+func NewWELL19937a(seeds [624]uint32) (r well19937a) {
+	r = well19937a{
+		state_i:   0,
+		_case:     1,
+		tempering: false,
+		temperB:   0xE46E1700,
+		temperC:   0x9B868000,
+		w:         32,
+		r:         624,
+		p:         31,
+		maskU:     0x7FFFFFFF, // (0xffffffff>>(w-p))
+		maskL:     0x80000000, // {bitwise NOT}(maskU)
+		m1:        70,
+		m2:        179,
+		m3:        449,
+	}
+	copy(r.state[:], seeds[:])
+	return
 }
