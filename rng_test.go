@@ -110,3 +110,8 @@ func TestMT19937_64(t *testing.T) {
 	r := NewMT19937_64(0)
 	fmt.Println(r.NextUint64())
 }
+
+func TestWELL512a(t *testing.T) {
+	r := NewWELL512a([16]uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})
+	fmt.Println(r.NextFloat64())
+}
