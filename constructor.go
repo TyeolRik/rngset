@@ -453,3 +453,23 @@ func NewWELL19937a(seeds [624]uint32) (r well19937a) {
 	copy(r.state[:], seeds[:])
 	return
 }
+
+func NewWELL19937c(seeds [624]uint32) (r well19937a) {
+	r = well19937a{
+		state_i:   0,
+		_case:     1,
+		tempering: true,
+		temperB:   0xE46E1700,
+		temperC:   0x9B868000,
+		w:         32,
+		r:         624,
+		p:         31,
+		maskU:     0x7FFFFFFF, // (0xffffffff>>(w-p))
+		maskL:     0x80000000, // {bitwise NOT}(maskU)
+		m1:        70,
+		m2:        179,
+		m3:        449,
+	}
+	copy(r.state[:], seeds[:])
+	return
+}
