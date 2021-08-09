@@ -105,3 +105,8 @@ func TestKISS(t *testing.T) {
 		fmt.Println("Answer: ", 5033346742750153761)
 	*/
 }
+
+func TestMT19937_64(t *testing.T) {
+	r := NewMT19937_64(0)
+	fmt.Println(r.NextUint64())
+}

@@ -337,3 +337,23 @@ func NewKISS(cng, xs uint64) kiss {
 	}
 	return r
 }
+
+type mt19937_64 struct {
+	MT    [312]uint64
+	index uint64
+}
+
+// Initialize the generator from a seed
+func NewMT19937_64(seed uint64) mt19937_64 {
+	r := mt19937_64{}
+	r.index = 312
+	r.MT[0] = seed
+	var f uint64 = 6364136223846793005
+	var i uint64
+	for i = 1; i < 312; i++ {
+		// MT[i] := lowest w bits of (f * (MT[i-1] xor (MT[i-1] >> (w-2))) + i)
+		// The value for f for MT19937 is 1812433253 and for MT19937-64 is 6364136223846793005.
+		r.MT[i] = f*(r.MT[i-1]^(r.MT[i-1]>>62)) + i // lowest 64 bits
+	}
+	return r
+}
