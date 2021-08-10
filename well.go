@@ -49,16 +49,16 @@ func (r *well1024a) NextFloat64() float64 {
 	return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 }
 
-func (r *well19937a) mat0pos(t, v uint32) uint32 {
+func (r *well19937) mat0pos(t, v uint32) uint32 {
 	return (v ^ (v >> t))
 }
-func (r *well19937a) mat0neg(t, v uint32) uint32 {
+func (r *well19937) mat0neg(t, v uint32) uint32 {
 	return (v ^ (v << (t)))
 }
-func (r *well19937a) mat3pos(t, v uint32) uint32 {
+func (r *well19937) mat3pos(t, v uint32) uint32 {
 	return (v >> t)
 }
-func (r *well19937a) case1() float64 {
+func (r *well19937) case1() float64 {
 	// r.state_i == 0
 	r.z0 = (r.state[r.state_i+r.r-1] & r.maskL) | (r.state[r.state_i+r.r-2] & r.maskU)
 	r.z1 = r.mat0neg(25, r.state[r.state_i]) ^ r.mat0pos(27, r.state[r.state_i+r.m1])
@@ -76,7 +76,7 @@ func (r *well19937a) case1() float64 {
 		return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 	}
 }
-func (r *well19937a) case2() float64 {
+func (r *well19937) case2() float64 {
 	// r.state_i == 1
 	r.z0 = (r.state[r.state_i-1] & r.maskL) | (r.state[r.state_i+r.r-2] & r.maskU)
 	r.z1 = r.mat0neg(25, r.state[r.state_i]) ^ r.mat0pos(27, r.state[r.state_i+r.m1])
@@ -93,7 +93,7 @@ func (r *well19937a) case2() float64 {
 		return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 	}
 }
-func (r *well19937a) case3() float64 {
+func (r *well19937) case3() float64 {
 	// r.state_i+r.m1 >= r.r
 	r.z0 = (r.state[r.state_i-1] & r.maskL) | (r.state[r.state_i-2] & r.maskU)
 	r.z1 = r.mat0neg(25, r.state[r.state_i]) ^ r.mat0pos(27, r.state[r.state_i+r.m1-r.r])
@@ -112,7 +112,7 @@ func (r *well19937a) case3() float64 {
 		return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 	}
 }
-func (r *well19937a) case4() float64 {
+func (r *well19937) case4() float64 {
 	// r.state_i+r.m3 >= r.r
 	r.z0 = (r.state[r.state_i-1] & r.maskL) | (r.state[r.state_i-2] & r.maskU)
 	r.z1 = r.mat0neg(25, r.state[r.state_i]) ^ r.mat0pos(27, r.state[r.state_i+r.m1])
@@ -131,7 +131,7 @@ func (r *well19937a) case4() float64 {
 		return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 	}
 }
-func (r *well19937a) case5() float64 {
+func (r *well19937) case5() float64 {
 	// r.state_i+r.m2 >= r.r
 	r.z0 = (r.state[r.state_i-1] & r.maskL) | (r.state[r.state_i-2] & r.maskU)
 	r.z1 = r.mat0neg(25, r.state[r.state_i]) ^ r.mat0pos(27, r.state[r.state_i+r.m1])
@@ -150,7 +150,7 @@ func (r *well19937a) case5() float64 {
 		return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 	}
 }
-func (r *well19937a) case6() float64 {
+func (r *well19937) case6() float64 {
 	// 2 <= r.state_i <= (r.r - r.m3 - 1)
 	r.z0 = (r.state[r.state_i-1] & r.maskL) | (r.state[r.state_i-2] & r.maskU)
 	r.z1 = r.mat0neg(25, r.state[r.state_i]) ^ r.mat0pos(27, r.state[r.state_i+r.m1])
@@ -169,7 +169,7 @@ func (r *well19937a) case6() float64 {
 		return float64(r.state[r.state_i]) * 2.32830643653869628906e-10
 	}
 }
-func (r *well19937a) NextFloat64() float64 {
+func (r *well19937) NextFloat64() float64 {
 	switch r._case {
 	case 1:
 		return r.case1()

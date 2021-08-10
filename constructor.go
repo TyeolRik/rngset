@@ -421,7 +421,7 @@ func NewWELL1024a(seeds [32]uint32) (r well1024a) {
 	return
 }
 
-type well19937a struct {
+type well19937 struct {
 	state   [624]uint32
 	state_i uint32
 
@@ -434,8 +434,8 @@ type well19937a struct {
 	z0, z1, z2       uint32
 }
 
-func NewWELL19937a(seeds [624]uint32) (r well19937a) {
-	r = well19937a{
+func NewWELL19937a(seeds [624]uint32) (r well19937) {
+	r = well19937{
 		state_i:   0,
 		_case:     1,
 		tempering: false,
@@ -454,8 +454,8 @@ func NewWELL19937a(seeds [624]uint32) (r well19937a) {
 	return
 }
 
-func NewWELL19937c(seeds [624]uint32) (r well19937a) {
-	r = well19937a{
+func NewWELL19937c(seeds [624]uint32) (r well19937) {
+	r = well19937{
 		state_i:   0,
 		_case:     1,
 		tempering: true,
