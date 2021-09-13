@@ -23,3 +23,8 @@ func TestDieharderOutput(t *testing.T) {
 
 // 18시 20분 25초 시작
 // dieharder -a -g 202 -f mt19937_64_100000000.txt && echo "test mail for sendmail gmail relay" | mail -s "Test End" kino6147@gmail.com && date
+
+func TestDieharderWichMannHill(t *testing.T) {
+	d := rngset.NewDieHarder("WichMann_Hill", 10000000, 0)
+	
+}
