@@ -1,6 +1,8 @@
 package rngset_test
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"testing"
 
@@ -32,4 +34,22 @@ func TestDieharder6Block(t *testing.T) {
 	//d.MakeFileForBlockRand("./", 4, 32)
 	//d.MakeFileForBlockRand("./", 5, 32)
 	d.MakeFileForBlockRand("./", 6, 32)
+}
+
+func TestDieharderWichmannHill(t *testing.T) {
+	d := rngset.NewDieHarder("WichmannHill", 10000000, 0)
+	d.MakeFileForWichmannHill("./", 0, 32)
+}
+
+func TestCryptoRand(t *testing.T) {
+	b := make([]byte, 8)
+	rand.Read(b)
+	_s1 := binary.LittleEndian.Uint64(b)
+	rand.Read(b)
+	_s2 := binary.LittleEndian.Uint64(b)
+	rand.Read(b)
+	_s3 := binary.LittleEndian.Uint64(b)
+	fmt.Println(_s1)
+	fmt.Println(_s2)
+	fmt.Println(_s3)
 }

@@ -2,6 +2,7 @@ package rngset
 
 import (
 	"crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"log"
 	"math/big"
@@ -93,4 +94,51 @@ func (d *dieharder) MakeFileForBlockRand(outputPath string, blockSize uint16, bi
 		}
 	}
 
+}
+
+func (d *dieharder) MakeFileForWichmannHill(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
+
+	b := make([]byte, 8)
+	rand.Read(b)
+	_s1 := int64(binary.LittleEndian.Uint64(b))
+	rand.Read(b)
+	_s2 := int64(binary.LittleEndian.Uint64(b))
+	rand.Read(b)
+	_s3 := int64(binary.LittleEndian.Uint64(b))
+
+	test := NewWichmannHill(_s1, _s2, _s3)
+	// 0 <= return <= 2^32-1
+	var MAX_uint32 uint32 = ^uint32(0)
+
+	var writeCount uint64 = 0
+	for writeCount < d.theNumberOfRNG {
+		generated := make([]uint32, 18)
+		for i := range generated {
+			generated[i] = uint32(test.Generate() * float64(MAX_uint32))
+		}
+		// Fisher-Yates Shuffle
+		for i := len(generated) - 1; i > 0; i-- {
+			j, _ := rand.Int(rand.Reader, big.NewInt(int64(i+1)))
+			generated[i], generated[j.Int64()] = generated[j.Int64()], generated[i]
+		}
+		for i := 0; i < 3; i++ {
+			fd.WriteString(fmt.Sprintf("%v\n", generated[i]))
+			writeCount++
+			if writeCount >= d.theNumberOfRNG {
+				break
+			}
+		}
+	}
 }
