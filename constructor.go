@@ -1,11 +1,10 @@
 package rngset
 
 import (
-	"C"
 	"fmt"
+	"log"
 	"strconv"
 )
-import "log"
 
 type goMathRand struct {
 	seed              int64
