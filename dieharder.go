@@ -45,6 +45,35 @@ func (d *dieharder) MakeFile(outputPath string) {
 	}
 }
 
+func (d *dieharder) MakeFileForWell19937a(outputPath string) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%v.txt", outputPath, d.rngName, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v  seed = %v\n", d.rngName, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", 32))
+
+	var seeds [624]uint32
+	max_uint32 := ^uint32(0)
+	for i := range seeds {
+		r, _ := rand.Int(rand.Reader, big.NewInt(int64(max_uint32)))
+		seeds[i] = uint32(r.Int64())
+	}
+	test := NewWELL19937a(seeds)
+
+	var writeCount uint64 = 0
+	for writeCount < d.theNumberOfRNG {
+		fd.WriteString(fmt.Sprintf("%v\n", test.NewUint32()))
+		writeCount++
+	}
+}
+
 func (d *dieharder) MakeFileForBlockRand(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
 	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {
@@ -62,7 +91,7 @@ func (d *dieharder) MakeFileForBlockRand(outputPath string, blockSize uint16, bi
 	var writeCount uint64 = 0
 
 	for writeCount < d.theNumberOfRNG {
-		test := NewSR(blockSize)
+		test := NewSR__mt19937_64__well19937a(blockSize)
 		useridIndex := 0
 		var isAllMined bool = false
 
@@ -135,6 +164,155 @@ func (d *dieharder) MakeFileForWichmannHill(outputPath string, blockSize uint16,
 		}
 		for i := 0; i < 3; i++ {
 			fd.WriteString(fmt.Sprintf("%v\n", generated[i]))
+			writeCount++
+			if writeCount >= d.theNumberOfRNG {
+				break
+			}
+		}
+	}
+}
+
+func (d *dieharder) MakeFileForSR__WichmannHill__WichmannHill(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
+
+	var writeCount uint64 = 0
+
+	for writeCount < d.theNumberOfRNG {
+		test := NewSR__WichmannHill__WichmannHill(blockSize)
+		useridIndex := 0
+		var isAllMined bool = false
+
+		var blockIndex uint16
+		for blockIndex = 0; blockIndex < blockSize; blockIndex++ {
+			for i := 0; i < 3; i++ {
+				tempRandom, err := rand.Int(rand.Reader, big.NewInt(int64(^uint32(0)>>1)))
+				if err != nil {
+					log.Fatalln(err)
+				}
+				test.Participate(strconv.Itoa(useridIndex), tempRandom.Uint64())
+				useridIndex++
+			}
+			isAllMined = test.Mining()
+		}
+
+		for !isAllMined {
+			isAllMined = test.Mining()
+		}
+
+		first3data := test.GetFirst3Returns()
+
+		for i := 0; i < 3; i++ {
+			fd.WriteString(fmt.Sprintf("%v\n", first3data[i]))
+			writeCount++
+			if writeCount >= d.theNumberOfRNG {
+				break
+			}
+		}
+	}
+}
+
+func (d *dieharder) MakeFileForSR__Kiss__WELL512(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
+
+	var writeCount uint64 = 0
+	b := make([]byte, 8)
+
+	for writeCount < d.theNumberOfRNG {
+		test := NewSR__Kiss__WELL512(blockSize)
+		useridIndex := 0
+		var isAllMined bool = false
+
+		var blockIndex uint16
+		for blockIndex = 0; blockIndex < blockSize; blockIndex++ {
+			for i := 0; i < 4; i++ {
+				rand.Read(b)
+				tempRandom := binary.LittleEndian.Uint64(b)
+				test.Participate(strconv.Itoa(useridIndex), tempRandom)
+				useridIndex++
+			}
+			isAllMined = test.Mining()
+		}
+
+		for !isAllMined {
+			isAllMined = test.Mining()
+		}
+
+		getData := test.GetFirst18Returns()
+
+		for i := 0; i < len(getData); i++ {
+			fd.WriteString(fmt.Sprintf("%v\n", getData[i]))
+			writeCount++
+			if writeCount >= d.theNumberOfRNG {
+				break
+			}
+		}
+	}
+}
+
+// This takes too many time
+func (d *dieharder) MakeFileForSR__Kiss__WELL19937(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
+
+	var writeCount uint64 = 0
+	b := make([]byte, 8)
+
+	for writeCount < d.theNumberOfRNG {
+		test := NewSR__Kiss__WELL19937(blockSize)
+		useridIndex := 0
+		var isAllMined bool = false
+
+		var blockIndex uint16
+		for blockIndex = 0; blockIndex < blockSize; blockIndex++ {
+			for i := 0; i < 4; i++ {
+				rand.Read(b)
+				tempRandom := binary.LittleEndian.Uint64(b)
+				test.Participate(strconv.Itoa(useridIndex), tempRandom)
+				useridIndex++
+			}
+			isAllMined = test.Mining()
+		}
+
+		for !isAllMined {
+			isAllMined = test.Mining()
+		}
+
+		first3data := test.GetFirst3Returns()
+
+		for i := 0; i < 3; i++ {
+			fd.WriteString(fmt.Sprintf("%v\n", first3data[i]))
 			writeCount++
 			if writeCount >= d.theNumberOfRNG {
 				break

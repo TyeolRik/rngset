@@ -25,6 +25,7 @@ func TestDieharderOutput(t *testing.T) {
 
 // 18시 20분 25초 시작
 // dieharder -a -g 202 -f mt19937_64_100000000.txt && echo "test mail for sendmail gmail relay" | mail -s "Test End" kino6147@gmail.com && date
+// date && dieharder -a -g 202 -f Well19937a_100000000.txt >> ./output/default_well19937a.txt && date
 
 func TestDieharder6Block(t *testing.T) {
 	d := rngset.NewDieHarder("sr__mt19937_64__well19937a", 10000000, 0)
@@ -41,15 +42,40 @@ func TestDieharderWichmannHill(t *testing.T) {
 	d.MakeFileForWichmannHill("./", 0, 32)
 }
 
-func TestCryptoRand(t *testing.T) {
-	b := make([]byte, 8)
-	rand.Read(b)
-	_s1 := binary.LittleEndian.Uint64(b)
-	rand.Read(b)
-	_s2 := binary.LittleEndian.Uint64(b)
-	rand.Read(b)
-	_s3 := binary.LittleEndian.Uint64(b)
-	fmt.Println(_s1)
-	fmt.Println(_s2)
-	fmt.Println(_s3)
+func TestDieharderWell19937a(t *testing.T) {
+	d := rngset.NewDieHarder("Well19937a", 100, 0)
+	d.MakeFileForWell19937a("./")
+}
+
+func TestDieharderSR__WichmannHill__WichmannHill(t *testing.T) {
+	d := rngset.NewDieHarder("sr__WichmannHill__WichmannHill", 100, 0)
+
+	var i uint16
+	for i = 1; i <= 6; i++ {
+		d.MakeFileForSR__WichmannHill__WichmannHill("./", i, 64)
+	}
+}
+
+func TestWELL512(t *testing.T) {
+	b := make([]byte, 4)
+	var seeds [16]uint32
+	for i := 0; i < 16; i++ {
+		rand.Read(b)
+		seeds[i] = binary.LittleEndian.Uint32(b)
+	}
+	r := rngset.NewWELL512a(seeds)
+	for i := 0; i < 10; i++ {
+		fmt.Println(r.NewUint32())
+	}
+}
+
+func TestDieharderSR__Kiss__WELL512(t *testing.T) {
+	d := rngset.NewDieHarder("sr__Kiss__WELL512", 10000000, 0)
+	d.MakeFileForSR__Kiss__WELL512("./", 6, 32)
+}
+
+func TestDieharderSR__Kiss__WELL19937(t *testing.T) {
+	// Test Failed
+	d := rngset.NewDieHarder("sr__Kiss__WELL19937", 5000000, 0)
+	d.MakeFileForSR__Kiss__WELL19937("./", 6, 32)
 }
