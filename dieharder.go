@@ -9,7 +9,6 @@ import (
 	"math/big"
 	"os"
 	"strconv"
-	"time"
 )
 
 type dieharder struct {
@@ -303,55 +302,8 @@ func (d *dieharder) MakeFileForSR__Kiss__WELL512(outputPath string, blockSize ui
 	}
 }
 
-func (d *dieharder) MakeFileForSR__Kiss__WELL512__Extreme_8block_2participant(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
-	w := bufio.NewWriter(fd)
-	if err != nil {
-		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
-	}
-	defer fd.Close()
-	fd.WriteString("#==================================================================\n")
-	//	fd.WriteString(fmt.Sprintf(""))
-	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
-	fd.WriteString("#==================================================================\n")
-	fd.WriteString("type: d\n")
-	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
-	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
-
-	var writeCount uint64 = 0
-	b := make([]byte, 8)
-	participantInput := make([]uint64, 16)
-	var wellSeed [16]uint32
-
-	var for1, for2 int64
-
-	for writeCount < d.theNumberOfRNG {
-		for i := range participantInput {
-			rand.Read(b)
-			participantInput[i] = binary.LittleEndian.Uint64(b)
-		}
-		check1 := time.Now().UnixNano()
-		for i := 0; i < 16; i = i + 2 {
-			_newKISS := NewKISS(participantInput[i], participantInput[i+1])
-			temp := _newKISS.NextUInt64()
-			wellSeed[i] = uint32(temp >> 32)
-			wellSeed[i+1] = uint32((temp << 32) >> 32)
-		}
-		check2 := time.Now().UnixNano()
-		_newWELL512 := NewWELL512a(wellSeed)
-		for i := 0; i < 16; i++ {
-			fmt.Fprintf(w, "%v\n", _newWELL512.NewUint32())
-		}
-		check3 := time.Now().UnixNano()
-		for1 := for1 + (check2 - check1)
-		for2 := for2 + (check3 - check2)
-		fmt.Println("For1 :", for1)
-		fmt.Println("For2 :", for2)
-	}
-
-}
-
 // This takes too many time
+// Found the issue. KISS algorithm needs too many time to assign memory for Q [2097152]uint64
 func (d *dieharder) MakeFileForSR__Kiss__WELL19937(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
 	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {

@@ -81,11 +81,6 @@ func TestDieharderSR__Kiss__WELL512(t *testing.T) {
 	d.MakeFileForSR__Kiss__WELL512("./", 8, 32)
 }
 
-func TestDieharderSR__Kiss__WELL512__Extreme_8block_2participant(t *testing.T) {
-	d := rngset.NewDieHarder("sr__Kiss__WELL512__Extreme", 10000000, 0)
-	d.MakeFileForSR__Kiss__WELL512__Extreme_8block_2participant("./", 8, 32)
-}
-
 func TestDieharderSR__Kiss__WELL19937(t *testing.T) {
 	// go test -run TestDieharderSR__Kiss__WELL19937 -timeout 500m
 	// Test Failed // Too Slow
