@@ -37,6 +37,12 @@ func TestDieharder6Block(t *testing.T) {
 	d.MakeFileForBlockRand("./", 6, 32)
 }
 
+func TestDieharderKiss(t *testing.T) {
+	// 1000만개 25초
+	d := rngset.NewDieHarder("KISS", 100000000, 0)
+	d.MakeFileForKISS("./generated/", 0, 64)
+}
+
 func TestDieharderWichmannHill(t *testing.T) {
 	d := rngset.NewDieHarder("WichmannHill", 10000000, 0)
 	d.MakeFileForWichmannHill("./", 0, 32)
@@ -70,12 +76,19 @@ func TestWELL512(t *testing.T) {
 }
 
 func TestDieharderSR__Kiss__WELL512(t *testing.T) {
-	d := rngset.NewDieHarder("sr__Kiss__WELL512", 10000000, 0)
-	d.MakeFileForSR__Kiss__WELL512("./", 6, 32)
+	// go test -run TestDieharderSR__Kiss__WELL512 -timeout 10s
+	d := rngset.NewDieHarder("sr__Kiss__WELL512", 5000000, 0)
+	d.MakeFileForSR__Kiss__WELL512("./", 8, 32)
+}
+
+func TestDieharderSR__Kiss__WELL512__Extreme_8block_2participant(t *testing.T) {
+	d := rngset.NewDieHarder("sr__Kiss__WELL512__Extreme", 10000000, 0)
+	d.MakeFileForSR__Kiss__WELL512__Extreme_8block_2participant("./", 8, 32)
 }
 
 func TestDieharderSR__Kiss__WELL19937(t *testing.T) {
-	// Test Failed
+	// go test -run TestDieharderSR__Kiss__WELL19937 -timeout 500m
+	// Test Failed // Too Slow
 	d := rngset.NewDieHarder("sr__Kiss__WELL19937", 5000000, 0)
 	d.MakeFileForSR__Kiss__WELL19937("./", 6, 32)
 }

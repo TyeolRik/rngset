@@ -1,6 +1,7 @@
 package rngset
 
 import (
+	"bufio"
 	"crypto/rand"
 	"encoding/binary"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"math/big"
 	"os"
 	"strconv"
+	"time"
 )
 
 type dieharder struct {
@@ -25,7 +27,7 @@ func NewDieHarder(rngName string, theNumberOfRNG uint64, initialSeed uint64) die
 }
 
 func (d *dieharder) MakeFile(outputPath string) {
-	fd, err := os.Create(outputPath + d.rngName + "_" + fmt.Sprintf("%v.txt", d.theNumberOfRNG))
+	fd, err := os.Create(outputPath + d.rngName + "_" + fmt.Sprintf("%v.dat", d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}
@@ -46,7 +48,7 @@ func (d *dieharder) MakeFile(outputPath string) {
 }
 
 func (d *dieharder) MakeFileForWell19937a(outputPath string) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%v.txt", outputPath, d.rngName, d.theNumberOfRNG))
+	fd, err := os.Create(fmt.Sprintf("%v%v_%v.dat", outputPath, d.rngName, d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}
@@ -75,7 +77,7 @@ func (d *dieharder) MakeFileForWell19937a(outputPath string) {
 }
 
 func (d *dieharder) MakeFileForBlockRand(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}
@@ -125,8 +127,38 @@ func (d *dieharder) MakeFileForBlockRand(outputPath string, blockSize uint16, bi
 
 }
 
+func (d *dieharder) MakeFileForKISS(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
+
+	b := make([]byte, 8)
+	rand.Read(b)
+	s1 := binary.LittleEndian.Uint64(b)
+	rand.Read(b)
+	s2 := binary.LittleEndian.Uint64(b)
+	test := NewKISS(s1, s2)
+
+	var writeCount uint64 = 0
+	w := bufio.NewWriter(fd)
+	for writeCount < d.theNumberOfRNG {
+		fmt.Fprintf(w, "%v\n", test.NextUInt64())
+		w.Flush()
+		writeCount++
+	}
+}
+
 func (d *dieharder) MakeFileForWichmannHill(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}
@@ -173,7 +205,7 @@ func (d *dieharder) MakeFileForWichmannHill(outputPath string, blockSize uint16,
 }
 
 func (d *dieharder) MakeFileForSR__WichmannHill__WichmannHill(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}
@@ -223,7 +255,7 @@ func (d *dieharder) MakeFileForSR__WichmannHill__WichmannHill(outputPath string,
 }
 
 func (d *dieharder) MakeFileForSR__Kiss__WELL512(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}
@@ -238,6 +270,7 @@ func (d *dieharder) MakeFileForSR__Kiss__WELL512(outputPath string, blockSize ui
 
 	var writeCount uint64 = 0
 	b := make([]byte, 8)
+	w := bufio.NewWriter(fd)
 
 	for writeCount < d.theNumberOfRNG {
 		test := NewSR__Kiss__WELL512(blockSize)
@@ -246,7 +279,7 @@ func (d *dieharder) MakeFileForSR__Kiss__WELL512(outputPath string, blockSize ui
 
 		var blockIndex uint16
 		for blockIndex = 0; blockIndex < blockSize; blockIndex++ {
-			for i := 0; i < 4; i++ {
+			for i := 0; i < 2; i++ {
 				rand.Read(b)
 				tempRandom := binary.LittleEndian.Uint64(b)
 				test.Participate(strconv.Itoa(useridIndex), tempRandom)
@@ -259,21 +292,68 @@ func (d *dieharder) MakeFileForSR__Kiss__WELL512(outputPath string, blockSize ui
 			isAllMined = test.Mining()
 		}
 
-		getData := test.GetFirst18Returns()
+		getData := test.GetReturns(16)
 
 		for i := 0; i < len(getData); i++ {
-			fd.WriteString(fmt.Sprintf("%v\n", getData[i]))
+			fmt.Fprintf(w, "%v\n", getData[i])
+			w.Flush()
+			// fd.WriteString(fmt.Sprintf("%v\n", getData[i]))
 			writeCount++
-			if writeCount >= d.theNumberOfRNG {
-				break
-			}
 		}
 	}
 }
 
+func (d *dieharder) MakeFileForSR__Kiss__WELL512__Extreme_8block_2participant(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	w := bufio.NewWriter(fd)
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v_%vBlock  seed = %v\n", d.rngName, blockSize, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", bits_32_or_64))
+
+	var writeCount uint64 = 0
+	b := make([]byte, 8)
+	participantInput := make([]uint64, 16)
+	var wellSeed [16]uint32
+
+	var for1, for2 int64
+
+	for writeCount < d.theNumberOfRNG {
+		for i := range participantInput {
+			rand.Read(b)
+			participantInput[i] = binary.LittleEndian.Uint64(b)
+		}
+		check1 := time.Now().UnixNano()
+		for i := 0; i < 16; i = i + 2 {
+			_newKISS := NewKISS(participantInput[i], participantInput[i+1])
+			temp := _newKISS.NextUInt64()
+			wellSeed[i] = uint32(temp >> 32)
+			wellSeed[i+1] = uint32((temp << 32) >> 32)
+		}
+		check2 := time.Now().UnixNano()
+		_newWELL512 := NewWELL512a(wellSeed)
+		for i := 0; i < 16; i++ {
+			fmt.Fprintf(w, "%v\n", _newWELL512.NewUint32())
+		}
+		check3 := time.Now().UnixNano()
+		for1 := for1 + (check2 - check1)
+		for2 := for2 + (check3 - check2)
+		fmt.Println("For1 :", for1)
+		fmt.Println("For2 :", for2)
+	}
+
+}
+
 // This takes too many time
 func (d *dieharder) MakeFileForSR__Kiss__WELL19937(outputPath string, blockSize uint16, bits_32_or_64 uint16) {
-	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.txt", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
+	fd, err := os.Create(fmt.Sprintf("%v%v_%vBlock_%v.dat", outputPath, d.rngName, blockSize, d.theNumberOfRNG))
 	if err != nil {
 		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
 	}

@@ -288,6 +288,7 @@ func (r *sr__Kiss__WELL512) Mining() bool {
 
 		// Using WELL19937
 		var realSeed [16]uint32
+
 		for blockIndex := range r.blocks {
 			realSeed[2*blockIndex] = uint32(r.blocks[blockIndex].realSeed >> 32)
 			realSeed[2*blockIndex+1] = uint32(r.blocks[blockIndex].realSeed & 0x00000000FFFFFFFF)
@@ -298,6 +299,7 @@ func (r *sr__Kiss__WELL512) Mining() bool {
 			realSeed[realSeedIndex] = uint32(newUint64 >> 32)
 			realSeed[realSeedIndex+1] = uint32(newUint64 & 0x00000000FFFFFFFF)
 		}
+
 		/*
 			for blockIndex := range r.blocks {
 				realSeed[2*blockIndex] = uint32(r.blocks[blockIndex].realSeed >> 32)
@@ -329,6 +331,22 @@ func (r *sr__Kiss__WELL512) Mining() bool {
 
 		return false
 	}
+}
+
+func (r *sr__Kiss__WELL512) GetReturns(theNumberOfReturns int) (ret []uint64) {
+	globalIndex := 0
+	ret = make([]uint64, theNumberOfReturns)
+	for _, eachBlock := range r.blocks {
+		for i := range eachBlock.participants {
+			ret[globalIndex] = eachBlock.participants[i].returns
+			globalIndex++
+
+			if globalIndex >= len(ret) {
+				return
+			}
+		}
+	}
+	return
 }
 
 func (r *sr__Kiss__WELL512) GetFirst18Returns() (ret [18]uint64) {

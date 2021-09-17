@@ -1,0 +1,208 @@
+#=============================================================================#
+#            dieharder version 3.31.1 Copyright 2003 Robert G. Brown          #
+#=============================================================================#
+   rng_name    |           filename             |rands/second|
+     file_input|sr__Kiss__WELL512_6Block_5000000.txt|  7.81e+06  |
+#=============================================================================#
+        test_name   |ntup| tsamples |psamples|  p-value |Assessment
+#=============================================================================#
+   diehard_birthdays|   0|       100|     100|0.60084894|  PASSED  
+      diehard_operm5|   0|   1000000|     100|0.00000000|  FAILED  
+  diehard_rank_32x32|   0|     40000|     100|0.00280191|   WEAK   
+    diehard_rank_6x8|   0|    100000|     100|0.00017462|   WEAK   
+   diehard_bitstream|   0|   2097152|     100|0.38034423|  PASSED  
+        diehard_opso|   0|   2097152|     100|0.00000452|   WEAK   
+        diehard_oqso|   0|   2097152|     100|0.00591489|  PASSED  
+         diehard_dna|   0|   2097152|     100|0.24290979|  PASSED  
+diehard_count_1s_str|   0|    256000|     100|0.72935866|  PASSED  
+diehard_count_1s_byt|   0|    256000|     100|0.00145694|   WEAK   
+ diehard_parking_lot|   0|     12000|     100|0.30484250|  PASSED  
+    diehard_2dsphere|   2|      8000|     100|0.97227953|  PASSED  
+    diehard_3dsphere|   3|      4000|     100|0.14627514|  PASSED  
+     diehard_squeeze|   0|    100000|     100|0.00039504|   WEAK   
+        diehard_sums|   0|       100|     100|0.91852923|  PASSED  
+        diehard_runs|   0|    100000|     100|0.02868545|  PASSED  
+        diehard_runs|   0|    100000|     100|0.15231242|  PASSED  
+       diehard_craps|   0|    200000|     100|0.00000000|  FAILED  
+       diehard_craps|   0|    200000|     100|0.00253729|   WEAK   
+ marsaglia_tsang_gcd|   0|  10000000|     100|0.00000000|  FAILED  
+ marsaglia_tsang_gcd|   0|  10000000|     100|0.00000000|  FAILED  
+         sts_monobit|   1|    100000|     100|0.04284817|  PASSED  
+            sts_runs|   2|    100000|     100|0.03743490|  PASSED  
+          sts_serial|   1|    100000|     100|0.04284817|  PASSED  
+          sts_serial|   2|    100000|     100|0.01028152|  PASSED  
+          sts_serial|   3|    100000|     100|0.08442920|  PASSED  
+          sts_serial|   3|    100000|     100|0.88024959|  PASSED  
+          sts_serial|   4|    100000|     100|0.10093190|  PASSED  
+          sts_serial|   4|    100000|     100|0.22426637|  PASSED  
+          sts_serial|   5|    100000|     100|0.01558268|  PASSED  
+          sts_serial|   5|    100000|     100|0.26851287|  PASSED  
+          sts_serial|   6|    100000|     100|0.12506081|  PASSED  
+          sts_serial|   6|    100000|     100|0.73559529|  PASSED  
+          sts_serial|   7|    100000|     100|0.50312362|  PASSED  
+          sts_serial|   7|    100000|     100|0.92915685|  PASSED  
+          sts_serial|   8|    100000|     100|0.43050545|  PASSED  
+          sts_serial|   8|    100000|     100|0.39447770|  PASSED  
+          sts_serial|   9|    100000|     100|0.57622905|  PASSED  
+          sts_serial|   9|    100000|     100|0.04571256|  PASSED  
+          sts_serial|  10|    100000|     100|0.28952328|  PASSED  
+          sts_serial|  10|    100000|     100|0.40746811|  PASSED  
+          sts_serial|  11|    100000|     100|0.73021379|  PASSED  
+          sts_serial|  11|    100000|     100|0.34483614|  PASSED  
+          sts_serial|  12|    100000|     100|0.29314712|  PASSED  
+          sts_serial|  12|    100000|     100|0.80084389|  PASSED  
+          sts_serial|  13|    100000|     100|0.02483926|  PASSED  
+          sts_serial|  13|    100000|     100|0.00167656|   WEAK   
+          sts_serial|  14|    100000|     100|0.18219694|  PASSED  
+          sts_serial|  14|    100000|     100|0.76152225|  PASSED  
+          sts_serial|  15|    100000|     100|0.58706053|  PASSED  
+          sts_serial|  15|    100000|     100|0.35020016|  PASSED  
+          sts_serial|  16|    100000|     100|0.28453051|  PASSED  
+          sts_serial|  16|    100000|     100|0.05002658|  PASSED  
+         rgb_bitdist|   1|    100000|     100|0.02824340|  PASSED  
+         rgb_bitdist|   2|    100000|     100|0.57928815|  PASSED  
+         rgb_bitdist|   3|    100000|     100|0.78271142|  PASSED  
+         rgb_bitdist|   4|    100000|     100|0.22754573|  PASSED  
+         rgb_bitdist|   5|    100000|     100|0.11236225|  PASSED  
+         rgb_bitdist|   6|    100000|     100|0.42942055|  PASSED  
+         rgb_bitdist|   7|    100000|     100|0.96476756|  PASSED  
+         rgb_bitdist|   8|    100000|     100|0.79274905|  PASSED  
+         rgb_bitdist|   9|    100000|     100|0.58914561|  PASSED  
+         rgb_bitdist|  10|    100000|     100|0.95543271|  PASSED  
+         rgb_bitdist|  11|    100000|     100|0.19917328|  PASSED  
+         rgb_bitdist|  12|    100000|     100|0.17435013|  PASSED  
+rgb_minimum_distance|   2|     10000|    1000|0.04447146|  PASSED  
+rgb_minimum_distance|   3|     10000|    1000|0.05310885|  PASSED  
+rgb_minimum_distance|   4|     10000|    1000|0.06349544|  PASSED  
+rgb_minimum_distance|   5|     10000|    1000|0.00008141|   WEAK   
+    rgb_permutations|   2|    100000|     100|0.00003145|   WEAK   
+    rgb_permutations|   3|    100000|     100|0.09331335|  PASSED  
+    rgb_permutations|   4|    100000|     100|0.18538806|  PASSED  
+    rgb_permutations|   5|    100000|     100|0.00000664|   WEAK   
+      rgb_lagged_sum|   0|   1000000|     100|0.00000003|  FAILED  
+      rgb_lagged_sum|   1|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|   2|   1000000|     100|0.00000004|  FAILED  
+      rgb_lagged_sum|   3|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|   4|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|   5|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|   6|   1000000|     100|0.00016966|   WEAK   
+      rgb_lagged_sum|   7|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|   8|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|   9|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  10|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  11|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  12|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  13|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  14|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  15|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  16|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  17|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  18|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  19|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  20|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  21|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  22|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  23|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  24|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  25|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  26|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  27|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  28|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  29|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  30|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  31|   1000000|     100|0.00000000|  FAILED  
+      rgb_lagged_sum|  32|   1000000|     100|0.00000000|  FAILED  
+     rgb_kstest_test|   0|     10000|    1000|0.00026321|   WEAK   
+     dab_bytedistrib|   0|  51200000|       1|0.00000000|  FAILED  
+             dab_dct| 256|     50000|       1|0.43941298|  PASSED  
+Preparing to run test 207.  ntuple = 0
+        dab_filltree|  32|  15000000|       1|0.00000004|  FAILED  
+        dab_filltree|  32|  15000000|       1|0.00000001|  FAILED  
+Preparing to run test 208.  ntuple = 0
+       dab_filltree2|   0|   5000000|       1|0.00000000|  FAILED  
+       dab_filltree2|   1|   5000000|       1|0.00000000|  FAILED  
+Preparing to run test 209.  ntuple = 0
+        dab_monobit2|  12|  65000000|       1|1.00000000|  FAILED  
+
+2시간 20분 소요.
+500만개 데이터 생성에 27263.698s
+# The file file_input was rewound 2 times
+# The file file_input was rewound 22 times
+# The file file_input was rewound 48 times
+# The file file_input was rewound 60 times
+# The file file_input was rewound 65 times
+# The file file_input was rewound 107 times
+# The file file_input was rewound 135 times
+# The file file_input was rewound 148 times
+# The file file_input was rewound 149 times
+# The file file_input was rewound 175 times
+# The file file_input was rewound 175 times
+# The file file_input was rewound 176 times
+# The file file_input was rewound 176 times
+# The file file_input was rewound 222 times
+# The file file_input was rewound 222 times
+# The file file_input was rewound 224 times
+# The file file_input was rewound 251 times
+# The file file_input was rewound 651 times
+# The file file_input was rewound 653 times
+# The file file_input was rewound 655 times
+# The file file_input was rewound 657 times
+# The file file_input was rewound 661 times
+# The file file_input was rewound 669 times
+# The file file_input was rewound 681 times
+# The file file_input was rewound 697 times
+# The file file_input was rewound 717 times
+# The file file_input was rewound 741 times
+# The file file_input was rewound 769 times
+# The file file_input was rewound 801 times
+# The file file_input was rewound 837 times
+# The file file_input was rewound 877 times
+# The file file_input was rewound 921 times
+# The file file_input was rewound 969 times
+# The file file_input was rewound 973 times
+# The file file_input was rewound 979 times
+# The file file_input was rewound 987 times
+# The file file_input was rewound 997 times
+# The file file_input was rewound 1001 times
+# The file file_input was rewound 1007 times
+# The file file_input was rewound 1015 times
+# The file file_input was rewound 1025 times
+# The file file_input was rewound 1045 times
+# The file file_input was rewound 1085 times
+# The file file_input was rewound 1145 times
+# The file file_input was rewound 1225 times
+# The file file_input was rewound 1325 times
+# The file file_input was rewound 1445 times
+# The file file_input was rewound 1585 times
+# The file file_input was rewound 1745 times
+# The file file_input was rewound 1925 times
+# The file file_input was rewound 2125 times
+# The file file_input was rewound 2345 times
+# The file file_input was rewound 2585 times
+# The file file_input was rewound 2845 times
+# The file file_input was rewound 3125 times
+# The file file_input was rewound 3425 times
+# The file file_input was rewound 3745 times
+# The file file_input was rewound 4085 times
+# The file file_input was rewound 4445 times
+# The file file_input was rewound 4825 times
+# The file file_input was rewound 5225 times
+# The file file_input was rewound 5645 times
+# The file file_input was rewound 6085 times
+# The file file_input was rewound 6545 times
+# The file file_input was rewound 7025 times
+# The file file_input was rewound 7525 times
+# The file file_input was rewound 8045 times
+# The file file_input was rewound 8585 times
+# The file file_input was rewound 9145 times
+# The file file_input was rewound 9725 times
+# The file file_input was rewound 10325 times
+# The file file_input was rewound 10945 times
+# The file file_input was rewound 11585 times
+# The file file_input was rewound 12245 times
+# The file file_input was rewound 12247 times
+# The file file_input was rewound 12278 times
+# The file file_input was rewound 12280 times
+# The file file_input was rewound 12303 times
+# The file file_input was rewound 12309 times
+# The file file_input was rewound 12322 times

@@ -24,12 +24,13 @@ func (r *well512a) mat4neg(t, b, v uint32) uint32 {
 	return (v ^ ((v << t) & b))
 }
 func (r *well512a) NewUint32() uint32 {
-	r.z0 = r.state[(r.state_i+15)&0x0000000F]
+	temp := (r.state_i + 15) & 0x0000000F
+	r.z0 = r.state[temp]
 	r.z1 = r.mat0neg(16, r.state[r.state_i]) ^ r.mat0neg(15, r.state[(r.state_i+r.m1)&0x0000000F])
 	r.z2 = r.mat0pos(11, r.state[(r.state_i+r.m2)&0x0000000F])
 	r.state[r.state_i] = r.z1 ^ r.z2
-	r.state[(r.state_i+15)&0x0000000F] = r.mat0neg(2, r.z0) ^ r.mat0neg(18, r.z1) ^ r.mat3neg(28, r.z2) ^ r.mat4neg(5, 0xDA442D24, r.state[r.state_i])
-	r.state_i = (r.state_i + 15) & 0x0000000F
+	r.state[temp] = r.mat0neg(2, r.z0) ^ r.mat0neg(18, r.z1) ^ r.mat3neg(28, r.z2) ^ r.mat4neg(5, 0xDA442D24, r.state[r.state_i])
+	r.state_i = temp
 	return r.state[r.state_i]
 }
 func (r *well512a) NextFloat64() float64 {

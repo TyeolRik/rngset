@@ -1,6 +1,8 @@
 package rngset
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"testing"
 )
@@ -24,6 +26,32 @@ func TestMiddleSquare(t *testing.T) {
 		fmt.Println(now)
 	}
 
+}
+
+func BenchmarkKISS(b *testing.B) {
+	randB := make([]byte, 8)
+	var r1, r2 uint64
+	rand.Read(randB)
+	r1 = binary.LittleEndian.Uint64(randB)
+	rand.Read(randB)
+	r2 = binary.LittleEndian.Uint64(randB)
+	for i := 0; i < b.N; i++ {
+		_kiss := NewKISS(r1, r2)
+		_kiss.NextUInt64()
+	}
+}
+
+func BenchmarkWELL512a(b *testing.B) {
+	randB := make([]byte, 4)
+	var seeds [16]uint32
+	for i := range seeds {
+		rand.Read(randB)
+		seeds[i] = binary.LittleEndian.Uint32(randB)
+	}
+	for i := 0; i < b.N; i++ {
+		well512a := NewWELL512a(seeds)
+		well512a.NewUint32()
+	}
 }
 
 func TestWichmannHill(t *testing.T) {

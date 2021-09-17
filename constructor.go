@@ -301,7 +301,7 @@ type kiss struct {
 	Q     [2097152]uint64
 	carry uint64
 
-	j    int32
+	j    uint64
 	_cng uint64
 	_xs  uint64
 }
