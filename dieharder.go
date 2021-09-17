@@ -352,3 +352,53 @@ func (d *dieharder) MakeFileForSR__Kiss__WELL19937(outputPath string, blockSize 
 		}
 	}
 }
+
+func (d *dieharder) MakeFileForSR__Keccak256__WELL512a(outputPath string, blockSize uint16, theNumberOfParticipant int, pollNumber int) {
+	fileName := fmt.Sprintf("%v_%vBlock_%vParticipant_%vPolls_%v", d.rngName, blockSize, theNumberOfParticipant, pollNumber, d.theNumberOfRNG)
+	fd, err := os.Create(outputPath + fileName + ".dat")
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v seed = %v\n", fileName, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", 32))
+
+	var writeCount uint64 = 0
+	b := make([]byte, 8)
+	w := bufio.NewWriter(fd)
+
+	for writeCount < d.theNumberOfRNG {
+		test := NewSR__Keccak256__WELL512a(blockSize)
+		useridIndex := 0
+		var isAllMined bool = false
+
+		var blockIndex uint16
+		for blockIndex = 0; blockIndex < blockSize; blockIndex++ {
+			for i := 0; i < theNumberOfParticipant; i++ {
+				rand.Read(b)
+				tempRandom := binary.LittleEndian.Uint64(b)
+				test.Participate(strconv.Itoa(useridIndex), tempRandom)
+				useridIndex++
+			}
+			isAllMined = test.Mining()
+		}
+
+		for !isAllMined {
+			isAllMined = test.Mining()
+		}
+
+		getData := test.GetReturns(pollNumber)
+
+		for i := 0; i < len(getData); i++ {
+			fmt.Fprintf(w, "%v\n", getData[i])
+			w.Flush()
+			// fd.WriteString(fmt.Sprintf("%v\n", getData[i]))
+			writeCount++
+		}
+	}
+}

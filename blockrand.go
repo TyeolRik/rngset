@@ -1,7 +1,10 @@
 package rngset
 
 import (
+	"encoding/binary"
 	"math/rand"
+
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type participant struct {
@@ -14,6 +17,11 @@ type participant struct {
 type block struct {
 	realSeed uint64
 
+	participants []participant
+}
+
+type keccakBlock struct {
+	realSeed     []byte
 	participants []participant
 }
 
@@ -475,6 +483,103 @@ func (r *sr__Kiss__WELL19937) GetFirst3Returns() (ret [3]uint64) {
 			globalIndex++
 
 			if globalIndex >= 3 {
+				return
+			}
+		}
+	}
+	return
+}
+
+type sr__Keccak256__WELL512a struct {
+	// Information
+	_blockSize uint16 // n개의 블록이 모이면 output을 만들 수 있다.
+
+	state  uint64        // 현재 단계
+	blocks []keccakBlock // n개의 블록이 모이면 output을 만들 수 있음. realSeed = 256bits
+
+	participantCounter uint32
+}
+
+func NewSR__Keccak256__WELL512a(blockSize uint16) (ret sr__Keccak256__WELL512a) {
+	blocks := make([]keccakBlock, blockSize)
+	for i := range blocks {
+		blocks[i].participants = make([]participant, 0)
+	}
+	ret = sr__Keccak256__WELL512a{
+		_blockSize:         blockSize,
+		state:              0,
+		blocks:             blocks,
+		participantCounter: 0,
+	}
+	return
+}
+
+func (r *sr__Keccak256__WELL512a) Participate(userID string, userInput uint64) {
+	r.blocks[r.state].participants = append(r.blocks[r.state].participants, participant{userID: userID, userInput: userInput})
+	r.participantCounter++
+}
+
+func (r *sr__Keccak256__WELL512a) Mining() bool {
+	tempByte := make([]byte, 8)
+	if r.state == uint64(r._blockSize) {
+		// Make Real Output (Real Random Number)
+		// 각 블록에 대한 realSeed를 만든다.
+		for blockIndex, block := range r.blocks {
+			var blockseed uint64 = 0
+			for _, participant := range block.participants {
+				blockseed = blockseed ^ participant.userInput
+			}
+			binary.LittleEndian.PutUint64(tempByte, blockseed)
+			hashValue := crypto.Keccak256(tempByte)
+			r.blocks[blockIndex].realSeed = hashValue
+		}
+
+		// Using WELL512a
+		var realSeed [16]uint32
+		for blockIndex, eachBlock := range r.blocks {
+			for i := 0; i < 8; i++ {
+				realSeed[8*(blockIndex&1)+i] = binary.LittleEndian.Uint32(eachBlock.realSeed[4*i : 4*(i+1)])
+			}
+		}
+		if len(r.blocks) == 1 {
+			anotherHash := crypto.Keccak256(r.blocks[0].realSeed)
+			for i := 0; i < 8; i++ {
+				realSeed[8+i] = binary.LittleEndian.Uint32(anotherHash[4*i : 4*(i+1)])
+			}
+		}
+		well512a := NewWELL512a(realSeed)
+
+		var allReturns []uint64 = make([]uint64, r.participantCounter)
+		for i := range allReturns {
+			allReturns[i] = uint64(well512a.NewUint32())
+		}
+		rand.Seed(int64(well512a.NewUint32()))
+		rand.Shuffle(len(allReturns), func(i int, j int) { allReturns[i], allReturns[j] = allReturns[j], allReturns[i] })
+		globalIndex := 0
+		for _, eachBlock := range r.blocks {
+			for i := range eachBlock.participants {
+				eachBlock.participants[i].returns = allReturns[globalIndex]
+				globalIndex++
+			}
+		}
+		return true
+	} else {
+		// Go Next Block State
+		r.state++
+
+		return false
+	}
+}
+
+func (r *sr__Keccak256__WELL512a) GetReturns(theNumberOfReturns int) (ret []uint64) {
+	globalIndex := 0
+	ret = make([]uint64, theNumberOfReturns)
+	for _, eachBlock := range r.blocks {
+		for i := range eachBlock.participants {
+			ret[globalIndex] = eachBlock.participants[i].returns
+			globalIndex++
+
+			if globalIndex >= len(ret) {
 				return
 			}
 		}

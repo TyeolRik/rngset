@@ -1,10 +1,13 @@
 package rngset
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/binary"
 	"fmt"
 	"testing"
+
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 func TestBinary(t *testing.T) {
@@ -51,6 +54,38 @@ func BenchmarkWELL512a(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		well512a := NewWELL512a(seeds)
 		well512a.NewUint32()
+	}
+}
+
+func checkhash(t *testing.T, name string, f func([]byte) []byte, msg, exp []byte) {
+	sum := f(msg)
+	if !bytes.Equal(exp, sum) {
+		t.Fatalf("hash %s mismatch: want: %x have: %x", name, exp, sum)
+	}
+}
+
+func TestKeccak256(t *testing.T) {
+	msg := []byte("12345")
+	hash := crypto.Keccak256Hash(msg)
+	fmt.Println(hash.Bytes())
+	fmt.Println(len(hash.Bytes()))
+
+	var temp []byte = []byte("1")
+	fmt.Println(temp)
+}
+
+func BenchmarkKeccak256(b *testing.B) {
+	randB := make([]byte, 8)
+	rand.Read(randB)
+	for i := 0; i < b.N; i++ {
+		crypto.Keccak256Hash(randB)
+	}
+}
+func BenchmarkKeccak512(b *testing.B) {
+	randB := make([]byte, 8)
+	rand.Read(randB)
+	for i := 0; i < b.N; i++ {
+		crypto.Keccak512(randB)
 	}
 }
 

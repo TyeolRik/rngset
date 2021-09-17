@@ -87,3 +87,8 @@ func TestDieharderSR__Kiss__WELL19937(t *testing.T) {
 	d := rngset.NewDieHarder("sr__Kiss__WELL19937", 5000000, 0)
 	d.MakeFileForSR__Kiss__WELL19937("./", 6, 32)
 }
+
+func TestDieharderSR__Keccak256__WELL512a(t *testing.T) {
+	d := rngset.NewDieHarder("sr__Keccak256__WELL512a", 1000000, 0)
+	d.MakeFileForSR__Keccak256__WELL512a("./", 6, 2, 4)
+}
