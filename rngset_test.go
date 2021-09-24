@@ -89,6 +89,10 @@ func TestDieharderSR__Kiss__WELL19937(t *testing.T) {
 }
 
 func TestDieharderSR__Keccak256__WELL512a(t *testing.T) {
-	d := rngset.NewDieHarder("sr__Keccak256__WELL512a", 1000000, 0)
-	d.MakeFileForSR__Keccak256__WELL512a("./", 6, 2, 4)
+	// go test -run TestDieharderSR__Keccak256__WELL512a -timeout 999m
+	d := rngset.NewDieHarder("sr__Keccak256__WELL512a", 100000000, 0)
+	var i uint16
+	for i = 2; i < 11; i++ {
+		d.MakeFileForSR__Keccak256__WELL512a("./generated/", i, 2, 4)
+	}
 }
