@@ -1,0 +1,15 @@
+#=============================================================================#
+#            dieharder version 3.31.1 Copyright 2003 Robert G. Brown          #
+#=============================================================================#
+   rng_name    |           filename             |rands/second|
+ file_input_raw|./generated/MT19937_10000000_BigEndian.bin|  5.65e+07  |
+#=============================================================================#
+        test_name   |ntup| tsamples |psamples|  p-value |Assessment
+#=============================================================================#
+   diehard_birthdays|   0|       100|     100|0.46325487|  PASSED  
+      diehard_operm5|   0|   1000000|     100|0.00000093|  FAILED  
+  diehard_rank_32x32|   0|     40000|     100|0.93085433|  PASSED  
+    diehard_rank_6x8|   0|    100000|     100|0.27138035|  PASSED  
+   diehard_bitstream|   0|   2097152|     100|0.75581067|  PASSED  
+        diehard_opso|   0|   2097152|     100|0.25961325|  PASSED  
+        diehard_oqso|   0|   2097152|     100|0.00025268|   WEAK   

@@ -46,6 +46,58 @@ func (d *dieharder) MakeFile(outputPath string) {
 	}
 }
 
+func (d *dieharder) MakeFileForMT19937(outputPath string) {
+	fd, err := os.Create(fmt.Sprintf("%v%v_%v.dat", outputPath, d.rngName, d.theNumberOfRNG))
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString(fmt.Sprintf("# generator %v  seed = %v\n", d.rngName, 0))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", 32))
+
+	littleEndianFile, err := os.Create(fmt.Sprintf("%v%v_%v_LittleEndian.bin", outputPath, d.rngName, d.theNumberOfRNG))
+	if err != nil {
+		panic(err)
+	}
+	defer littleEndianFile.Close()
+
+	bigEndianFile, err := os.Create(fmt.Sprintf("%v%v_%v_BigEndian.bin", outputPath, d.rngName, d.theNumberOfRNG))
+	if err != nil {
+		panic(err)
+	}
+	defer bigEndianFile.Close()
+
+	littleEndianFileBuffer := bufio.NewWriter(littleEndianFile)
+	bigEndianFileBuffer := bufio.NewWriter(bigEndianFile)
+
+	test := NewMT19937(0)
+	littleEndianByte := make([]byte, 4)
+	bigEndianByte := make([]byte, 4)
+
+	var writeCount uint64 = 0
+
+	for writeCount < d.theNumberOfRNG {
+		newInt32 := test.NextUint32()
+		binary.LittleEndian.PutUint32(littleEndianByte, newInt32)
+		binary.BigEndian.PutUint32(bigEndianByte, newInt32)
+		fd.WriteString(fmt.Sprintf("%v\n", newInt32))
+		for _, eachByte := range littleEndianByte {
+			littleEndianFileBuffer.WriteByte(eachByte)
+		}
+		for _, eachByte := range bigEndianByte {
+			bigEndianFileBuffer.WriteByte(eachByte)
+		}
+		littleEndianFileBuffer.Flush()
+		bigEndianFileBuffer.Flush()
+		writeCount++
+	}
+
+}
+
 func (d *dieharder) MakeFileForWell19937a(outputPath string) {
 	fd, err := os.Create(fmt.Sprintf("%v%v_%v.dat", outputPath, d.rngName, d.theNumberOfRNG))
 	if err != nil {
@@ -400,5 +452,39 @@ func (d *dieharder) MakeFileForSR__Keccak256__WELL512a(outputPath string, blockS
 			// fd.WriteString(fmt.Sprintf("%v\n", getData[i]))
 			writeCount++
 		}
+	}
+}
+
+func (d *dieharder) MakeFileForWELL512(outputPath string) {
+	fileName := fmt.Sprintf("%v_%v", d.rngName, d.theNumberOfRNG)
+	fd, err := os.Create(outputPath + fileName + ".dat")
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer fd.Close()
+	fd.WriteString("#==================================================================\n")
+	//	fd.WriteString(fmt.Sprintf(""))
+	fd.WriteString(fmt.Sprintf("# generator %v seed = %v\n", fileName, d.initialSeed))
+	fd.WriteString("#==================================================================\n")
+	fd.WriteString("type: d\n")
+	fd.WriteString(fmt.Sprintf("count: %v\n", d.theNumberOfRNG))
+	fd.WriteString(fmt.Sprintf("numbit: %v\n", 32))
+
+	var writeCount uint64 = 0
+	b := make([]byte, 4)
+	w := bufio.NewWriter(fd)
+
+	var seeds [16]uint32
+	for i := range seeds {
+		rand.Read(b)
+		seeds[i] = binary.LittleEndian.Uint32(b)
+	}
+	test := NewWELL512a(seeds)
+
+	for writeCount < d.theNumberOfRNG {
+		fmt.Fprintf(w, "%v\n", test.NewUint32())
+		w.Flush()
+		// fd.WriteString(fmt.Sprintf("%v\n", getData[i]))
+		writeCount++
 	}
 }

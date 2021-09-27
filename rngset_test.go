@@ -27,6 +27,11 @@ func TestDieharderOutput(t *testing.T) {
 // dieharder -a -g 202 -f mt19937_64_100000000.txt && echo "test mail for sendmail gmail relay" | mail -s "Test End" kino6147@gmail.com && date
 // date && dieharder -a -g 202 -f Well19937a_100000000.txt >> ./output/default_well19937a.txt && date
 
+func TestDieharderMT19937(t *testing.T) {
+	d := rngset.NewDieHarder("MT19937", 10000000, 0)
+	d.MakeFileForMT19937("./generated/")
+}
+
 func TestDieharder6Block(t *testing.T) {
 	d := rngset.NewDieHarder("sr__mt19937_64__well19937a", 10000000, 0)
 	//d.MakeFileForBlockRand("./", 1, 32)
@@ -95,4 +100,9 @@ func TestDieharderSR__Keccak256__WELL512a(t *testing.T) {
 	for i = 2; i < 11; i++ {
 		d.MakeFileForSR__Keccak256__WELL512a("./generated/", i, 2, 4)
 	}
+}
+
+func TestDieharderWELL512a(t *testing.T) {
+	d := rngset.NewDieHarder("default_well512", 100000000, 0)
+	d.MakeFileForWELL512("./generated/")
 }
