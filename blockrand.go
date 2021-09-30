@@ -571,12 +571,12 @@ func (r *sr__Keccak256__WELL512a) Mining() bool {
 	}
 }
 
-func (r *sr__Keccak256__WELL512a) GetReturns(theNumberOfReturns int) (ret []uint64) {
+func (r *sr__Keccak256__WELL512a) GetReturns(theNumberOfReturns int) (ret []uint32) {
 	globalIndex := 0
-	ret = make([]uint64, theNumberOfReturns)
+	ret = make([]uint32, theNumberOfReturns)
 	for _, eachBlock := range r.blocks {
 		for i := range eachBlock.participants {
-			ret[globalIndex] = eachBlock.participants[i].returns
+			ret[globalIndex] = uint32(eachBlock.participants[i].returns)
 			globalIndex++
 
 			if globalIndex >= len(ret) {

@@ -455,6 +455,50 @@ func (d *dieharder) MakeFileForSR__Keccak256__WELL512a(outputPath string, blockS
 	}
 }
 
+func (d *dieharder) MakeFileForSR__Keccak256__WELL512a__binaries(outputPath string, blockSize uint16, theNumberOfParticipant int, pollNumber int) {
+	fileName := fmt.Sprintf("%v_%vBlock_%vParticipant_%vPolls_%v", d.rngName, blockSize, theNumberOfParticipant, pollNumber, d.theNumberOfRNG)
+	file_die, err := os.Create(outputPath + fileName + ".bin")
+	if err != nil {
+		log.Fatalln("Failed to os.Create " + d.rngName + "_" + fmt.Sprintf("%v", d.theNumberOfRNG))
+	}
+	defer file_die.Close()
+
+	var writeCount uint64 = 0
+	b := make([]byte, 8)
+	write_die := bufio.NewWriter(file_die)
+
+	for writeCount < d.theNumberOfRNG {
+		test := NewSR__Keccak256__WELL512a(blockSize)
+		useridIndex := 0
+		var isAllMined bool = false
+
+		var blockIndex uint16
+		for blockIndex = 0; blockIndex < blockSize; blockIndex++ {
+			for i := 0; i < theNumberOfParticipant; i++ {
+				rand.Read(b)
+				tempRandom := binary.LittleEndian.Uint64(b)
+				test.Participate(strconv.Itoa(useridIndex), tempRandom)
+				useridIndex++
+			}
+			isAllMined = test.Mining()
+		}
+
+		for !isAllMined {
+			isAllMined = test.Mining()
+		}
+
+		getData := test.GetReturns(pollNumber)
+		byteArray := make([]byte, 4)
+
+		for _, data := range getData {
+			binary.LittleEndian.PutUint32(byteArray, data)
+			write_die.Write(byteArray)
+
+			writeCount++
+		}
+	}
+}
+
 func (d *dieharder) MakeFileForWELL512(outputPath string) {
 	fileName := fmt.Sprintf("%v_%v", d.rngName, d.theNumberOfRNG)
 	fd, err := os.Create(outputPath + fileName + ".dat")

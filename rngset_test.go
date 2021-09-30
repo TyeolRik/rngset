@@ -102,6 +102,16 @@ func TestDieharderSR__Keccak256__WELL512a(t *testing.T) {
 	}
 }
 
+func TestDieharderSR__Keccak256__WELL512a__Binaries(t *testing.T) {
+	// go test -run TestDieharderSR__Keccak256__WELL512a__Binaries -timeout 999m
+	// 100만개 = 8초 4mb
+	// 1000만개 80초 40mb
+	// 1억개 800초 400mb
+	// 10억개 8000초 4000mb (133분)
+	d := rngset.NewDieHarder("sr__Keccak256__WELL512a", 2000000000, 0)
+	d.MakeFileForSR__Keccak256__WELL512a__binaries("./generated/", 6, 2, 4)
+}
+
 func TestDieharderWELL512a(t *testing.T) {
 	d := rngset.NewDieHarder("default_well512", 100000000, 0)
 	d.MakeFileForWELL512("./generated/")
