@@ -175,8 +175,11 @@ func TestMT19937_64(t *testing.T) {
 }
 
 func TestWELL512a(t *testing.T) {
-	r := NewWELL512a([16]uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})
-	fmt.Println(r.NextFloat64())
+	r := NewWELL512a([16]uint32{0x82A75BDE, 0xEAE8604D, 0x839476AE, 0x9EFD8B0E, 0x15AA447E, 0x21BFD7F4, 0x1283BB54, 0xE22C9A82, 0xE08EC2AF, 0x2CFC2512, 0x25E1968F, 0xD6CA21E4, 0x044F129B, 0xFFA95BAC, 0x3503BE8B, 0xDB30A367})
+	for i := 0; i < 12; i++ {
+		fmt.Println(i, "\t", fmt.Sprintf("0x%x", r.NewUint32()))
+	}
+
 }
 
 func TestWELL19937a(t *testing.T) {
