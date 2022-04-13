@@ -21,8 +21,11 @@ This repository is the set of all kinds of Random Generators.
 |       TEST NAME |       SEED |     PASSED |       WEAK |     FAILED |
 |-----------------|------------|------------|------------|------------|
 |     TogetheRand |      99999 |        113 |          1 |          0 |
+|            zx81 |      99999 |          1 |          0 |        113 |
 |             awc |      99999 |         15 |          6 |         93 |
 |           awc_c |      99999 |         17 |          2 |         95 |
+|            swb1 |      99999 |         15 |          6 |         93 |
+|            swb2 |      99999 |         17 |          3 |         94 |
 |          c_rand |      12345 |         28 |          0 |         86 |
 | cpp_minstd_rand |      12345 |         26 |          2 |         86 |
 |     cpp_mt19937 |      12345 |        112 |          2 |          0 |
@@ -30,9 +33,10 @@ This repository is the set of all kinds of Random Generators.
 |     go_mathrand |      99999 |        111 |          3 |          0 |
 | kiss_2011_64bit |      12345 |        113 |          1 |          0 |
 |  mt19937_64bits |      12345 |        110 |          4 |          0 |
-|            swb1 |      99999 |         15 |          6 |         93 |
-|            swb2 |      99999 |         17 |          3 |         94 |
-|            zx81 |      99999 |          1 |          0 |        113 |
+|     WELL512a    |      12345 |        110 |          4 |          0 |
+|     WELL1024a   |      12345 |        111 |          3 |          0 |
+|    WELL19937a   |      12345 |        108 |          6 |          0 |
+|    WELL19937c   |      12345 |        114 |          0 |          0 |
 
 All PRNGs are tested by [Dieharder tests](https://webhome.phy.duke.edu/~rgb/General/dieharder.php) (Actually there is ubuntu package in [here](https://linux.die.net/man/1/dieharder))
 
